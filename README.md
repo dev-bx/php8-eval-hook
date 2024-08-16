@@ -1,21 +1,19 @@
-# php-eval-hook
+# php8-eval-hook
 
-A PHP extension for hooking `eval()`. Useful for dumping eval-obfuscated code. The extension is expected to work with PHP 7.x in general. May work with PHP 5.x but is untested.
+A PHP extension for hooking `eval()`. Useful for dumping eval-obfuscated code. The extension is expected to work with PHP 8.x in general. 
 
 ## Compiling steps
 
-A precompiled extension can be downloaded from [releases](https://github.com/extremecoders-re/php-eval-hook/releases). It has been compiled against PHP 7.2.24 available on Ubuntu 18.04 repos. The precompiled extension is not guaranteed to work on your system. Hence it's always recommended to compile from source as shown below.
-
-1. Install php and php-dev packages. Here we are using the packages available on the official Ubuntu 18.04 repos.
+1. Install php and php-devel packages. Here we are using the packages available on the official CentOS 7 repos.
 
     ```
-    $ sudo apt install php7.2 php7.2-dev
+    $ sudo yum install php-devel
     ```
 
 2. Clone the repository
 
     ```
-    $ git clone https://github.com/extremecoders-re/php-eval-hook
+    $ git clone https://github.com/dev-bx/php8-eval-hook
     ```
 
 3. Run `phpize`. This will generate the `Makefile` and other files needed for buidling the extension.
@@ -33,7 +31,7 @@ A precompiled extension can be downloaded from [releases](https://github.com/ext
     $ make
 
     $ make install
-    Installing shared extensions:     /usr/lib/php/20170718/
+    Installing shared extensions:     /usr/lib64/php/modules/
     ```
 
 ## Registering the extension with PHP
@@ -42,13 +40,13 @@ A precompiled extension can be downloaded from [releases](https://github.com/ext
 
     ```
     $ php -r 'phpinfo();' | grep php.ini
-    Configuration File (php.ini) Path => /etc/php/7.2/cli
-    Loaded Configuration File => /etc/php/7.2/cli/php.ini
+    Configuration File (php.ini) Path => /etc/php.ini
+    Loaded Configuration File => /etc/php.ini
     ```
 
 2. Edit *php.ini* and add the line `extension=evalhook.so` at the end.
     ```
-    $ echo "extension=evalhook.so" >> /etc/php/7.2/cli/php.ini
+    $ echo "extension=evalhook.so" >> /etc/php.ini
     ```
 
 3. Ensure that the extension is properly loaded.
