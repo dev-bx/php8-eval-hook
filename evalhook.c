@@ -15,10 +15,10 @@ ruslan@dev-bx.ru
 
 static const char module_name[] = "evalhook";
 
-static zend_op_array* (*old_compile_string)(zend_string *source_string, const char *filename);
+static zend_op_array* (*old_compile_string)(zend_string *source_string, const char *filename, zend_compile_position position);
 
 
-static zend_op_array* evalhook_compile_string(zend_string *source_string, const char *filename)
+static zend_op_array* evalhook_compile_string(zend_string *source_string, const char *filename, zend_compile_position position)
 {
 	zend_op_array *op_array = NULL;
 	int op_compiled = 0;
@@ -36,7 +36,7 @@ static zend_op_array* evalhook_compile_string(zend_string *source_string, const 
 			if(call_user_function(CG(function_table), NULL, &function, &retval, 2, parameter) == SUCCESS) {
 				switch(Z_TYPE(retval)) {
 					case IS_STRING:
-						op_array = old_compile_string(Z_STR(retval), filename);
+						op_array = old_compile_string(Z_STR(retval), filename, position);
 					case IS_FALSE:
 						op_compiled = 1;
 						break;
@@ -52,7 +52,7 @@ static zend_op_array* evalhook_compile_string(zend_string *source_string, const 
 	if(op_compiled) {
 		return op_array;
 	} else {
-		return old_compile_string(source_string, filename);
+		return old_compile_string(source_string, filename, position);
 	}
 }
 
@@ -73,7 +73,7 @@ ZEND_NAMED_FUNCTION(evalhook_extension_loaded)
 		Z_PARAM_STR(module)
 	ZEND_PARSE_PARAMETERS_END();
 
-	if (zend_string_equals_literal(module, module_name))
+	if (zend_string_equals_cstr(module, module_name, strlen(module_name)))
 	{
 		RETURN_FALSE;
 	}
